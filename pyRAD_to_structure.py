@@ -80,57 +80,6 @@ def haps(locus_lst):
             mono_loci.append(l)
     return poly_loci, mono_loci
 
-def haps_with_N(locus_lst):
-    """convert sequence data to haplotypes,
-       treat N's as missing data"""
-
-    poly_loci = []
-    mono_loci = []
-    for loci in locus_lst:
-
-        l = []
-        all = {}
-        hap = 1
-        haps = []
-
-        for ind in loci:
-            ind = ind.split()
-            #Treat samples with N's as missing data
-            if 'N' in ind[1]:
-                #print "Sequence contains an N."
-                l.append((ind[0], '-9'))
-                if '-9' not in haps:
-                    haps.append('-9')
-                continue
-
-            #first resolved sequence
-            if len(all) == 0:
-                all[ind[1]] = hap
-                l.append((ind[0], hap))
-                haps.append(hap)
-                hap += 1
-            else:
-                #haplotype is already recorded
-                if all.has_key(ind[1]) == True:
-                    l.append((ind[0], all.get(ind[1])))
-                #new haplotype
-                else:
-                    all[ind[1]] = hap
-                    l.append((ind[0], hap))
-                    haps.append(hap)
-                    hap += 1
-
-        #Remove monomorphic loci
-        if len(haps) > 2:
-            poly_loci.append(l)
-        elif len(haps) == 2 and '-9' not in haps:
-            poly_loci.append(l)
-        else:
-            mono_loci.append(l)
-    return poly_loci, mono_loci
-
-
-
 def add_to_final(samples, haplotypes):
     """Make final list of samples and haplotypes"""
     #keep track of samples with alleles
